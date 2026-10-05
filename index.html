@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1f1f21">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ambassador Hub">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>BadFlyer Ambassador Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Figtree:wght@400;500;600;800&display=swap">
+<style>
+html{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+
+/* Single dark look on purpose. Layout: sticky tab bar over a single 760px column; month scoreboard leads, lists below. */
+:root{ color-scheme:dark;
+  --bg:#1f1f21; --surface:#29292c; --ink:#ffffff; --muted:#b9b9be; --line:#3d3d42;
+  --accent:#e3fc02; --accent-ink:#1f1f21; --accent-soft:#3a4010; --aqua:#00fced;
+  --good:#00fced; --good-soft:#0c3b39; --warn:#ffc46b; --warn-soft:#3d2c0e; --gold:#e3fc02; --gold-soft:#3a4010;
+  --display:"Oswald","Arial Narrow",Impact,sans-serif; --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header.top{padding-top:22px;display:flex;flex-direction:column;gap:2px}
+h1{font:700 40px/1.05 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance}
+h1 span{color:var(--accent)}
+.sub{color:var(--muted);font-size:14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;padding-block:10px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{flex:none}
+button{font:800 13px var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:0;padding:8px 14px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.on,button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.sm{padding:5px 10px;font-size:13px}
+button.ghost{background:transparent;border-color:transparent;color:var(--muted);padding:5px 8px}
+h2{font:700 17px/1.2 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0}
+section{display:flex;flex-direction:column;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:0;padding:16px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row>.grow{flex:1;min-width:0}
+.score{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.big{font:700 54px/1 var(--display);font-variant-numeric:tabular-nums}
+.big small{font-size:24px;color:var(--muted)}
+.pips{display:flex;gap:6px}
+.pip{width:34px;height:10px;border-radius:0;background:var(--line)}
+.pip.f{background:var(--accent)}
+.chip{display:inline-block;font:700 11px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:0;background:var(--line);color:var(--ink);white-space:nowrap}
+.chip.C{background:var(--accent);color:var(--accent-ink)} .chip.S{background:var(--warn-soft);color:var(--warn)}
+.chip.F{background:var(--aqua);color:var(--accent-ink)} .chip.ours{background:var(--good-soft);color:var(--good)}
+.chip.open{background:transparent;border:1px solid var(--good);color:var(--good)} .chip.taken{color:var(--muted)}
+.list{display:flex;flex-direction:column}
+.item{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0;padding-top:0}
+.item .d{flex:none;width:46px;text-align:center;font-variant-numeric:tabular-nums}
+.item .d b{display:block;font:700 20px/1 var(--display)} .item .d i{font-style:normal;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.item .b{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.item.past{opacity:.55} .item.today .d b{color:var(--accent)}
+.t{font-weight:700} .m{color:var(--muted);font-size:14px}
+label.ck{display:inline-flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+input[type=text],input[type=date],select,textarea{font:15px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:0;padding:8px 10px;min-width:0;max-width:100%}
+textarea{width:100%;min-height:70px}
+.note{background:var(--warn-soft);color:var(--warn);border-radius:0;padding:10px 12px;font-size:14px}
+ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.code{font:700 16px ui-monospace,Menlo,monospace;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:0;user-select:all}
+.done-t{text-decoration:line-through;color:var(--muted)}
+a{color:var(--aqua)}
+.bar{background:var(--aqua);color:var(--accent-ink);margin-inline:-16px;padding:8px 16px;text-align:center;font:700 14px var(--display);text-transform:uppercase;letter-spacing:.08em}
+.item.today .d b{color:var(--accent)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.wk{font:700 13px var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--aqua)}
+</style>
+</head>
+<body>
+
+
+<div class="bar">4 posts a month &middot; Tag BadFlyer &middot; DM Bad_Flyer</div>
+<div class="wrap">
+<header class="top">
+  <h1>BadFlyer <span>Ambassador</span> Hub</h1>
+  <div class="sub">Asher's ambassador tracker. Not an official BadFlyer page.</div>
+</header>
+<nav id="nav"></nav>
+<div id="warn" class="note" hidden>This browser is blocking saved data, so check-offs and ideas won't be kept after you close the page.</div>
+<main id="view"></main>
+</div>
+
+<script>
+const DATA={"p":[["SKILL SHOWCASE","Film a 5–10 second clip of one skill you are proud of. Add the skill name and one reason you enjoy it. Post/tag @bad_flyer and submit the original."],["PRACTICE DUMP","Create a 3–5 photo carousel or short Reel from individual training moments this week and add a one-sentence recap."],["WEEKLY WIN","Share your biggest win of the week with one photo or short video."],["ONE GOAL","Post a practice photo or 5–10 second clip and state one specific goal for this week. Ask followers what they are working on."],["GET TO KNOW ME","Create a 15–20 second introduction with name, age, gym, team/level, position and one fun fact. End with why you are excited to be a BadFlyer Ambassador."],["BIGGEST WIN","Share your biggest recent athletic or personal win and explain why it matters."],["BEGINNER TIP","Film one beginner-friendly cheer tip you wish you knew sooner."],["WHY I CHEER","Film a 10–20 second Reel answering “Why do I cheer?” Keep it personal and specific. Post/tag @bad_flyer and submit the original."],["AUGUST CONTEST — INTRODUCE YOURSELF","Create an individual 10–20 second Ambassador introduction Reel. Include name, gym, position/level and one fun fact. Tag @bad_flyer and comment on the BadFlyer contest post."],["NEXT GOAL","Post one thing you want to improve next week and why."],["DON’T QUIT","Film an honest attempt at a skill you are learning. Add a positive message about progress including failed attempts."],["HOW I STARTED","Tell how you started cheer and what made you stay. Use a talking Reel or photo carousel."],["CURRENT CHALLENGE","Explain one thing you are improving and what you are doing differently."],["PRACTICE PREP","Share one thing you do before practice that helps you perform better."],["CHEER RELATABLE","Create a short funny Reel about something cheer athletes recognize: soreness, stretching, nerves, practice hair, or hitting a skill. Submit the original."],["FUNNY CHEER MOMENT","Create a harmless, relatable Reel based on a real cheer-athlete experience."],["GRATITUDE","Recognize one person who helped you this week. A solo photo and caption is enough; no group filming required."],["LABOR DAY — THE WORK BEHIND THE SKILL","Film 2–3 clips of individual training and explain the work behind a skill."],["FAVORITE SKILL","Show your favorite skill if safe to film, or use a photo, and explain why you love it."],["FAVORITE MEMORY","Share a favorite cheer memory and explain why you still remember it."],["NERVES","Answer: What do you do when you get nervous? Give one real strategy."],["PROGRESS CHECK","Show a skill you are improving. Add text such as “still working.” Submit the original clip and identify the skill."],["SLOW-MO SKILL","Film a safe skill/movement in slow motion. Add the skill name and one thing you are focusing on."],["ASK ATHLETES","Post one genuine cheer question you want other athletes to answer."],["LOCK IN","Film three clips: arriving, warming up and getting ready to practice. Add “How I get locked in.”"],["THREE FACTS","Create a Reel with three facts about yourself: one cheer fact and two unrelated facts."],["WHO INSPIRES ME","Feature one athlete, coach or cheer figure who inspires you and explain what you admire."],["LESSON FROM A MISTAKE","Tell a short story about a setback and what it taught you. Focus on growth."],["ATHLETE PERSONALITY","Create a short Reel showing your personality before, during or after practice. Add one sentence about what makes you unique."],["BEFORE/AFTER","Film a simple before-and-after practice transition."],["FAVORITE MOMENT","Share one favorite moment from the week and explain what made it special."],["LESSON FROM CHEER","Film a 15–20 second Reel answering: What lesson has cheer taught you that you use outside the gym?"],["CHEER DAY","Show getting ready, travel, practice and one after-practice moment in a 10–20 second Reel."],["MY GOALS","Name one short-term and one long-term cheer goal and ask followers which they want to see first."],["BETTER ATHLETE","Share three habits that make you a better athlete beyond simply practicing skills."],["BADFLYER IN REAL LIFE","Take an individual photo or short video wearing BadFlyer naturally at practice, at home, on the way to practice or at competition. Tell the story behind the moment."],["SEPTEMBER CONTEST — SKILL GOAL","Post a clip/photo of the skill you are chasing, explain how you are improving it, tag @bad_flyer and comment on the contest post."],["CONFIDENCE","Create a photo/Reel explaining what confidence means to you and why perfection is not required."],["THIS OR THAT","Create a Reel with two cheer choices—tumbling/stunts, flyer/base, practice/competition, etc.—and ask followers to choose."],["PHOTO DUMP","Post 4–6 individual photos from your week and explain your favorite."],["OCTOBER CONTEST — CHEER RELATABLE","Create an individual funny/relatable cheer Reel. Tag @bad_flyer and comment on the contest post."],["HALLOWEEN — CHEER EDITION","Create an individual Halloween-themed cheer photo/Reel."],["NOVEMBER CONTEST — CHEER GRATITUDE","Post about one thing cheer has given you this year and why it matters. Tag @bad_flyer and comment on the contest post."],["THANKSGIVING — WHAT CHEER GAVE ME","Post one thing cheer has given you this year and explain why it matters."],["DECEMBER CONTEST — HOLIDAY CHEER","Create an individual holiday-themed cheer photo/Reel. Tag @bad_flyer and comment on the contest post."],["HOLIDAY CHEER","Create an individual festive cheer photo or short Reel."],["CHRISTMAS — HOLIDAY MESSAGE","Post a simple holiday greeting using an individual photo/video."],["YEAR-END RECAP","Create a 5–10 clip Reel of your favorite cheer moments and biggest achievement."],["NEW YEAR — ONE BIG GOAL","Post your biggest cheer goal with a related photo/clip and why it matters."],["JANUARY CONTEST — NEW YEAR GOAL","Post your biggest cheer goal for the year with a related photo/clip. Tag @bad_flyer and comment on the contest post."],["VALENTINE’S DAY — WHY I LOVE CHEER","Create a Reel/photo finishing “I love cheer because…”"],["FEBRUARY CONTEST — WHY I LOVE CHEER","Create a Reel/photo finishing “I love cheer because…” Tag @bad_flyer and comment on the contest post."],["ST. PATRICK’S DAY — LUCK OR HARD WORK?","Use a cheer clip and explain whether progress came from luck, talent, hard work or all three."],["MARCH CONTEST — PROGRESS","Show a before/current comparison of a skill or milestone and explain what changed. Tag @bad_flyer and comment on the contest post."],["EASTER — SPRING CHEER","Create an individual spring/Easter cheer photo/Reel and mention a spring goal."],["APRIL CONTEST — CHEER TIP","Create a short educational Reel with one useful cheer tip. Tag @bad_flyer and comment on the contest post."],["MAY CONTEST — ATHLETE STORY","Tell a short story about a moment that changed you as an athlete. Tag @bad_flyer and comment on the contest post."],["MEMORIAL DAY — REMEMBRANCE","Post a respectful individual message honoring those who served."],["JUNE CONTEST — SUMMER TRAINING","Show what you are training for this summer and one specific goal. Tag @bad_flyer and comment on the contest post."],["FOURTH OF JULY — SUMMER CHEER","Create an individual patriotic/summer cheer photo/Reel and add your summer training goal."],["JULY CONTEST — BADFLYER FRIDAY FAVORITE","Create your best individual BadFlyer Friday-style Reel: skill, personality, progress or relatable cheer. Tag @bad_flyer and comment on the contest post."],["NEW SEASON — WHAT’S NEXT?","Film your new-season goal, current level/team if applicable and one skill you want to improve."],["AUGUST CONTEST — AMBASSADOR YEAR","Create a Reel/carousel showing your favorite BadFlyer Ambassador memory and what you learned. Tag @bad_flyer and comment on the contest post."],["AMBASSADOR YEAR RECAP","Create a Reel/carousel showing favorite BadFlyer Ambassador moments and one thing you learned."]],"d":[["2026-08-21","F",0,0],["2026-08-22","D",1,1],["2026-08-23","D",2,1],["2026-08-24","D",3,1],["2026-08-25","D",4,0],["2026-08-26","D",5,1],["2026-08-27","D",6,1],["2026-08-28","F",7,1],["2026-08-29","C",8,0],["2026-08-30","D",9,1],["2026-08-31","D",10,1],["2026-09-01","D",11,1],["2026-09-02","D",12,1],["2026-09-03","D",13,1],["2026-09-04","F",14,1],["2026-09-05","D",15,1],["2026-09-06","D",16,1],["2026-09-07","S",17,1],["2026-09-08","D",18,1],["2026-09-09","D",19,1],["2026-09-10","D",20,1],["2026-09-11","F",21,1],["2026-09-12","D",22,1],["2026-09-13","D",23,1],["2026-09-14","D",24,1],["2026-09-15","D",25,1],["2026-09-16","D",26,1],["2026-09-17","D",27,1],["2026-09-18","F",28,1],["2026-09-19","D",29,1],["2026-09-20","D",30,1],["2026-09-21","D",31,1],["2026-09-22","D",32,1],["2026-09-23","D",33,1],["2026-09-24","D",34,1],["2026-09-25","F",35,1],["2026-09-26","C",36,0],["2026-09-27","D",2,1],["2026-09-28","D",37,1],["2026-09-29","D",4,1],["2026-09-30","D",5,1],["2026-10-01","D",6,1],["2026-10-02","F",38,1],["2026-10-03","D",39,1],["2026-10-04","D",9,1],["2026-10-05","D",3,1],["2026-10-06","D",11,1],["2026-10-07","D",12,1],["2026-10-08","D",13,1],["2026-10-09","F",0,1],["2026-10-10","D",1,1],["2026-10-11","D",16,1],["2026-10-12","D",10,1],["2026-10-13","D",18,1],["2026-10-14","D",19,1],["2026-10-15","D",20,1],["2026-10-16","F",7,1],["2026-10-17","D",15,1],["2026-10-18","D",23,1],["2026-10-19","D",24,1],["2026-10-20","D",25,1],["2026-10-21","D",26,1],["2026-10-22","D",27,1],["2026-10-23","F",14,1],["2026-10-24","C",40,0],["2026-10-25","D",30,1],["2026-10-26","D",31,1],["2026-10-27","D",32,1],["2026-10-28","D",33,1],["2026-10-29","D",34,1],["2026-10-30","F",21,1],["2026-10-31","S",41,0],["2026-11-01","D",2,1],["2026-11-02","D",37,1],["2026-11-03","D",4,1],["2026-11-04","D",5,1],["2026-11-05","D",6,1],["2026-11-06","F",28,0],["2026-11-07","D",22,1],["2026-11-08","D",9,1],["2026-11-09","D",3,1],["2026-11-10","D",11,1],["2026-11-11","D",12,1],["2026-11-12","D",13,1],["2026-11-13","F",35,1],["2026-11-14","D",29,1],["2026-11-15","D",16,1],["2026-11-16","D",10,0],["2026-11-17","D",18,1],["2026-11-18","D",19,1],["2026-11-19","D",20,1],["2026-11-20","F",38,0],["2026-11-21","C",42,0],["2026-11-22","D",23,1],["2026-11-23","D",24,1],["2026-11-24","D",25,1],["2026-11-25","D",26,1],["2026-11-26","S",43,1],["2026-11-27","F",0,1],["2026-11-28","D",39,1],["2026-11-29","D",30,1],["2026-11-30","D",31,1],["2026-12-01","D",32,1],["2026-12-02","D",33,1],["2026-12-03","D",27,1],["2026-12-04","F",7,0],["2026-12-05","D",1,1],["2026-12-06","D",2,1],["2026-12-07","D",37,1],["2026-12-08","D",4,1],["2026-12-09","D",5,1],["2026-12-10","D",34,1],["2026-12-11","F",14,0],["2026-12-12","D",15,0],["2026-12-13","D",9,1],["2026-12-14","D",3,0],["2026-12-15","D",11,1],["2026-12-16","D",12,0],["2026-12-17","D",6,0],["2026-12-18","F",21,0],["2026-12-19","C",44,0],["2026-12-20","D",16,1],["2026-12-21","D",10,0],["2026-12-22","D",18,1],["2026-12-23","D",19,1],["2026-12-24","S",45,1],["2026-12-25","S",46,1],["2026-12-26","D",22,1],["2026-12-27","D",23,0],["2026-12-28","D",24,0],["2026-12-29","D",25,1],["2026-12-30","D",26,0],["2026-12-31","S",47,1],["2027-01-01","S",48,1],["2027-01-02","D",29,1],["2027-01-03","D",30,0],["2027-01-04","D",31,0],["2027-01-05","D",32,1],["2027-01-06","D",33,0],["2027-01-07","D",13,0],["2027-01-08","F",28,0],["2027-01-09","D",39,0],["2027-01-10","D",2,0],["2027-01-11","D",37,0],["2027-01-12","D",4,0],["2027-01-13","D",5,0],["2027-01-14","D",20,1],["2027-01-15","F",35,1],["2027-01-16","D",1,1],["2027-01-17","D",9,1],["2027-01-18","D",3,1],["2027-01-19","D",11,0],["2027-01-20","D",12,0],["2027-01-21","D",27,0],["2027-01-22","F",38,0],["2027-01-23","C",49,0],["2027-01-24","D",16,0],["2027-01-25","D",10,0],["2027-01-26","D",18,1],["2027-01-27","D",19,0],["2027-01-28","D",34,1],["2027-01-29","F",0,1],["2027-01-30","D",15,0],["2027-01-31","D",23,0],["2027-02-01","D",24,0],["2027-02-02","D",25,1],["2027-02-03","D",26,1],["2027-02-04","D",6,0],["2027-02-05","F",7,0],["2027-02-06","D",22,0],["2027-02-07","D",30,0],["2027-02-08","D",31,0],["2027-02-09","D",32,1],["2027-02-10","D",33,1],["2027-02-11","D",13,0],["2027-02-12","F",14,1],["2027-02-13","D",29,0],["2027-02-14","S",50,0],["2027-02-15","D",37,1],["2027-02-16","D",4,0],["2027-02-17","D",5,0],["2027-02-18","D",20,0],["2027-02-19","F",21,1],["2027-02-20","C",51,0],["2027-02-21","D",2,1],["2027-02-22","D",3,0],["2027-02-23","D",11,1],["2027-02-24","D",12,0],["2027-02-25","D",27,0],["2027-02-26","F",28,0],["2027-02-27","D",39,1],["2027-02-28","D",9,0],["2027-03-01","D",10,0],["2027-03-02","D",18,0],["2027-03-03","D",19,0],["2027-03-04","D",34,0],["2027-03-05","F",35,1],["2027-03-06","D",1,0],["2027-03-07","D",16,1],["2027-03-08","D",24,0],["2027-03-09","D",25,0],["2027-03-10","D",26,1],["2027-03-11","D",6,0],["2027-03-12","F",38,0],["2027-03-13","D",15,0],["2027-03-14","D",23,1],["2027-03-15","D",31,1],["2027-03-16","D",32,1],["2027-03-17","S",52,0],["2027-03-18","D",13,0],["2027-03-19","F",0,0],["2027-03-20","C",53,0],["2027-03-21","D",30,1],["2027-03-22","D",37,0],["2027-03-23","D",4,1],["2027-03-24","D",33,0],["2027-03-25","D",20,0],["2027-03-26","F",7,0],["2027-03-27","D",22,1],["2027-03-28","D",2,1],["2027-03-29","D",3,0],["2027-03-30","D",11,0],["2027-03-31","D",5,0],["2027-04-01","D",27,0],["2027-04-02","F",14,0],["2027-04-03","D",29,1],["2027-04-04","S",54,1],["2027-04-05","D",10,0],["2027-04-06","D",18,0],["2027-04-07","D",12,0],["2027-04-08","D",34,0],["2027-04-09","F",21,0],["2027-04-10","D",39,1],["2027-04-11","D",9,0],["2027-04-12","D",24,0],["2027-04-13","D",25,0],["2027-04-14","D",19,0],["2027-04-15","D",6,1],["2027-04-16","F",28,0],["2027-04-17","C",55,0],["2027-04-18","D",16,0],["2027-04-19","D",31,0],["2027-04-20","D",32,0],["2027-04-21","D",26,0],["2027-04-22","D",13,1],["2027-04-23","F",35,0],["2027-04-24","D",1,1],["2027-04-25","D",23,0],["2027-04-26","D",37,0],["2027-04-27","D",4,1],["2027-04-28","D",33,0],["2027-04-29","D",20,0],["2027-04-30","F",38,0],["2027-05-01","D",15,0],["2027-05-02","D",30,0],["2027-05-03","D",3,0],["2027-05-04","D",11,1],["2027-05-05","D",5,0],["2027-05-06","D",27,0],["2027-05-07","F",0,0],["2027-05-08","D",22,0],["2027-05-09","D",2,0],["2027-05-10","D",10,0],["2027-05-11","D",18,0],["2027-05-12","D",12,0],["2027-05-13","D",34,1],["2027-05-14","F",7,0],["2027-05-15","D",29,1],["2027-05-16","D",9,0],["2027-05-17","D",24,0],["2027-05-18","D",25,0],["2027-05-19","D",19,0],["2027-05-20","D",6,0],["2027-05-21","F",14,0],["2027-05-22","C",56,0],["2027-05-23","D",16,1],["2027-05-24","D",31,1],["2027-05-25","D",32,0],["2027-05-26","D",26,1],["2027-05-27","D",13,0],["2027-05-28","F",21,0],["2027-05-29","D",39,0],["2027-05-30","D",23,0],["2027-05-31","S",57,0],["2027-06-01","D",4,0],["2027-06-02","D",33,1],["2027-06-03","D",20,0],["2027-06-04","F",28,0],["2027-06-05","D",1,1],["2027-06-06","D",30,0],["2027-06-07","D",37,0],["2027-06-08","D",11,1],["2027-06-09","D",5,0],["2027-06-10","D",27,0],["2027-06-11","F",35,0],["2027-06-12","D",15,0],["2027-06-13","D",2,1],["2027-06-14","D",3,0],["2027-06-15","D",18,0],["2027-06-16","D",12,0],["2027-06-17","D",34,0],["2027-06-18","F",38,0],["2027-06-19","C",58,0],["2027-06-20","D",9,0],["2027-06-21","D",10,1],["2027-06-22","D",25,1],["2027-06-23","D",19,0],["2027-06-24","D",6,0],["2027-06-25","F",0,0],["2027-06-26","D",22,0],["2027-06-27","D",16,0],["2027-06-28","D",24,0],["2027-06-29","D",32,0],["2027-06-30","D",26,1],["2027-07-01","D",13,0],["2027-07-02","F",7,0],["2027-07-03","D",29,0],["2027-07-04","S",59,1],["2027-07-05","D",31,0],["2027-07-06","D",4,0],["2027-07-07","D",33,1],["2027-07-08","D",20,0],["2027-07-09","F",14,0],["2027-07-10","D",39,1],["2027-07-11","D",23,0],["2027-07-12","D",37,0],["2027-07-13","D",11,0],["2027-07-14","D",5,0],["2027-07-15","D",27,0],["2027-07-16","F",21,0],["2027-07-17","D",1,1],["2027-07-18","D",30,0],["2027-07-19","D",3,0],["2027-07-20","D",18,1],["2027-07-21","D",12,0],["2027-07-22","D",34,0],["2027-07-23","F",28,0],["2027-07-24","C",60,0],["2027-07-25","D",2,1],["2027-07-26","D",10,1],["2027-07-27","D",25,0],["2027-07-28","D",19,0],["2027-07-29","D",6,0],["2027-07-30","F",35,0],["2027-07-31","D",15,0],["2027-08-01","S",61,1],["2027-08-02","D",24,0],["2027-08-03","D",32,0],["2027-08-04","D",26,0],["2027-08-05","D",13,0],["2027-08-06","F",38,0],["2027-08-07","D",22,1],["2027-08-08","D",9,0],["2027-08-09","D",31,0],["2027-08-10","D",4,0],["2027-08-11","D",33,0],["2027-08-12","D",20,1],["2027-08-13","F",0,0],["2027-08-14","C",62,0],["2027-08-15","D",16,1],["2027-08-16","D",37,0],["2027-08-17","S",63,1],["2027-08-18","D",5,1],["2027-08-19","D",27,0],["2027-08-20","F",7,0]]};
+const TABS=[['month','Posts'],['ideas','Ideas & rules']];
+const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const SETUP=[
+ 'Wait to announce until BadFlyer posts the announcement on Bad_Flyer',
+ 'Like, comment on, and share the announcement post to her story',
+ 'Post the ambassador graphic to her page',
+ 'Add "BadFlyer Ambassador" to her profile info',
+ 'Follow the badflyer_ambassadors page',
+ 'Once accepted, DM the ambassadors page her home state',
+ 'Fill out the media release and email it to bad.flyer1@gmail.com'];
+let ok=true;
+function load(){try{return JSON.parse(localStorage.getItem('bf-hub')||'{}')}catch(e){ok=false;return {}}}
+let S=Object.assign({posts:[],ours:[],ideas:[],setup:{},refs:0,tab:'month'},load());
+if(S.tab!=='ideas')S.tab='month';
+function save(){try{localStorage.setItem('bf-hub',JSON.stringify(S))}catch(e){ok=false}document.getElementById('warn').hidden=ok}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pd=s=>{const a=s.split('-');return new Date(+a[0],a[1]-1,+a[2])};
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const TODAY=iso(new Date());
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+let vm=TODAY.slice(0,7),wk=0,showOpen=false,showPrompts=false;
+const shift=(ym,n)=>iso(new Date(+ym.slice(0,4),+ym.slice(5)-1+n,1)).slice(0,7);
+const row=s=>DATA.d.find(r=>r[0]===s);
+const dbox=s=>{const d=pd(s);return `<div class="d"><b>${d.getDate()}</b><i>${DOW[d.getDay()]}</i></div>`};
+function dayItem(r,btn){const p=DATA.p[r[2]];return `<div class="item">${dbox(r[0])}<div class="b"><div class="t">${esc(p[0])}</div><div class="m">${esc(p[1])}</div><div class="row">${btn}</div></div></div>`}
+
+function vMonth(){
+  const posts=S.posts.filter(p=>p.date.startsWith(vm)).sort((a,b)=>a.date<b.date?-1:1),n=posts.length;
+  const isNow=vm===TODAY.slice(0,7),last=new Date(+vm.slice(0,4),+vm.slice(5),0).getDate(),left=last-(+TODAY.slice(8));
+  const mn=MON[+vm.slice(5)-1];
+  const msg=n>=4?'Done for '+mn+'.':isNow?`${4-n} more to post, ${left} day${left===1?'':'s'} left.`:`${4-n} short of the 4 required.`;
+  const up=DATA.d.filter(r=>r[0]>=TODAY),nextC=up.find(r=>r[1]==='C'),mine=up.filter(r=>S.ours.includes(r[0]));
+  const open=up.filter(r=>r[1]!=='C'&&!r[3]&&!S.ours.includes(r[0])).slice(0,8);
+  const st=pd(TODAY);st.setDate(st.getDate()+wk*28);const en=new Date(st);en.setDate(en.getDate()+27);
+  const four=DATA.d.filter(r=>r[0]>=iso(st)&&r[0]<=iso(en));const sh=d=>MON[d.getMonth()].slice(0,3)+' '+d.getDate();const rng=sh(st)+' to '+sh(en);
+  const logBtn=r=>S.posts.some(x=>x.date===r[0])?'<span class="chip ours">Logged</span>':`<button class="sm" data-a="log" data-d="${r[0]}">Log this post</button>`;
+  return `<section>
+  <div class="panel"><div class="row"><button class="sm" data-a="vm" data-n="-1" aria-label="Previous month">‹</button><h2 class="grow">${mn} ${vm.slice(0,4)}</h2><button class="sm" data-a="vm" data-n="1" aria-label="Next month">›</button></div>
+   <div class="score"><div class="big">${n}<small>/4</small></div><div><div class="pips">${[0,1,2,3].map(i=>`<span class="pip ${i<n?'f':''}"></span>`).join('')}</div><div class="m" style="margin-top:8px">${msg}</div></div></div>
+   <div class="list">${posts.map(p=>`<div class="item">${dbox(p.date)}<div class="b">
+     <div class="t">${esc(p.what)||'Post'}</div>
+     <div class="row"><label class="ck"><input type="checkbox" id="tg-${p.id}" data-a="pf" data-f="tagged" data-id="${p.id}" ${p.tagged?'checked':''}>Tagged BadFlyer</label>
+     <label class="ck"><input type="checkbox" id="dm-${p.id}" data-a="pf" data-f="dmd" data-id="${p.id}" ${p.dmd?'checked':''}>DM'd to Bad_Flyer</label>
+     <button class="sm ghost" data-a="delp" data-id="${p.id}">Remove</button></div></div></div>`).join('')||'<div class="m">No posts logged yet this month.</div>'}</div>
+   <form class="row" id="addpost"><input type="date" id="np-date" value="${isNow?TODAY:vm+'-01'}"><input type="text" id="np-what" class="grow" placeholder="What Asher posted"><button class="primary">Log post</button></form>
+  </div>
+  <div class="row"><button class="sm" data-a="wk" data-n="-1" aria-label="Previous four weeks">‹</button><h2 class="grow">Prompts, ${rng}</h2><button class="sm" data-a="wk" data-n="1" aria-label="Next four weeks">›</button></div>
+  <div class="m">Prompts are optional ideas. Only the person who claims a date has to post it. Open and taken are from the sheet as of Oct 5.</div>
+  ${[0,1,2,3].map(w=>{const rs=four.filter(r=>Math.floor((pd(r[0])-st)/6048e5+1e-6)===w);return rs.length?`<div class="panel"><div class="wk">Week ${w+1}</div><div class="list">${rs.map(r=>{
+    const mineD=S.ours.includes(r[0]),st2=r[1]==='C'?'<span class="chip C">Contest, open to all</span>':mineD?'<span class="chip ours">Asher\'s date</span>':r[3]?'<span class="chip taken">Taken</span>':'<span class="chip open">Open</span>';
+    const claim=r[1]==='C'||(r[3]&&!mineD)?'':`<button class="sm ghost" data-a="ours" data-d="${r[0]}">${mineD?'Unclaim':'Asher claimed this'}</button>`;
+    return dayItem(r,st2+logBtn(r)+claim)}).join('')}</div></div>`:''}).join('')||'<div class="m">No prompts in these four weeks.</div>'}
+  </section>`;
+}
+
+function vIdeas(){
+  const seen=new Set(),pr=[];DATA.d.forEach(r=>{if(!seen.has(r[2])&&r[1]!=='C'&&r[1]!=='S'){seen.add(r[2]);pr.push(r[2])}});
+  const r=S.refs;
+  return `<section><h2>Post ideas</h2>
+  <div class="panel"><form class="row" id="addidea"><input type="text" id="ni-text" class="grow" placeholder="Add an idea"><button class="primary">Add</button></form>
+  <div class="list">${S.ideas.map(i=>`<div class="item"><div class="b"><div class="row"><label class="ck grow"><input type="checkbox" id="id-${i.id}" data-a="idone" data-id="${i.id}" ${i.done?'checked':''}><span class="${i.done?'done-t':''}">${esc(i.text)}</span></label><button class="sm ghost" data-a="deli" data-id="${i.id}">Remove</button></div></div></div>`).join('')||'<div class="m">Nothing saved yet. Check an idea off once it has been used.</div>'}</div></div>
+  <div class="panel"><div class="row"><div class="grow"><div class="t">Need inspiration?</div><div class="m">${pr.length} prompts from BadFlyer's calendar. Use any of them, any day.</div></div><button class="sm" data-a="prompts">${showPrompts?'Hide':'Browse prompts'}</button></div>
+   ${showPrompts?`<div class="list">${pr.map(i=>`<div class="item"><div class="b"><div class="t">${esc(DATA.p[i][0])}</div><div class="m">${esc(DATA.p[i][1])}</div><div class="row"><button class="sm" data-a="idea" data-i="${i}">Save to my ideas</button></div></div></div>`).join('')}</div>`:''}</div>
+  <h2>Rules</h2>
+  <div class="cols">
+   <div class="panel"><h2>Every post</h2><ul class="plain"><li>Tag BadFlyer or make them a collab</li><li>DM the post to <b>Bad_Flyer</b></li><li>Reels need a good cover photo in BadFlyer gear</li><li>Clean background, gear visible, shoes on</li><li>Clean music, no swearing</li></ul></div>
+   <div class="panel"><h2>Never</h2><ul class="plain"><li>Tag or collab the Ambassadors page</li><li>Hotel rooms, bedrooms, or beds</li><li>Adult themes</li><li>Paid promoters, promo pages, or "loops"</li></ul></div>
+  </div>
+  <div class="panel"><h2>Codes & links</h2><div class="row"><span class="code">Ambassador15</span><span class="grow m">BadFlyer and Raleigh Rhinestones. Not Rebel.</span></div><div class="row"><span class="code">Ambassador2</span><span class="grow m">$5 off Rebel. Stacks.</span></div>
+   <div class="row"><button class="sm" data-a="ref" data-n="-1" aria-label="Remove one friend">−</button><b>${r}</b><button class="sm" data-a="ref" data-n="1" aria-label="Add one friend">+</button><span class="grow m">friends signed up. Every 5 earns free gear; ${5-(r%5)} to go.</span></div>
+   <div class="m">Questions go by DM to <a href="https://www.instagram.com/bad_flyer/" target="_blank" rel="noopener">Bad_Flyer</a>, not the <a href="https://www.instagram.com/badflyer_ambassadors/" target="_blank" rel="noopener">Ambassadors page</a>.</div></div>
+  </section>`;
+}
+
+function render(){
+  document.getElementById('nav').innerHTML=TABS.map(t=>`<button class="${S.tab===t[0]?'on':''}" data-a="tab" data-t="${t[0]}">${t[1]}</button>`).join('');
+  document.getElementById('view').innerHTML=(S.tab==='ideas'?vIdeas:vMonth)();
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b||b.tagName==='INPUT')return;const a=b.dataset.a,d=b.dataset.d;
+  if(a==='tab'){S.tab=b.dataset.t;window.scrollTo(0,0)}
+  else if(a==='vm')vm=shift(vm,+b.dataset.n);
+  else if(a==='wk')wk+=+b.dataset.n;
+  else if(a==='prompts')showPrompts=!showPrompts;
+  else if(a==='ours'){S.ours=S.ours.includes(d)?S.ours.filter(x=>x!==d):S.ours.concat(d)}
+  else if(a==='log'){S.posts.push({id:uid(),date:d,what:DATA.p[row(d)[2]][0],tagged:false,dmd:false});vm=d.slice(0,7)}
+  else if(a==='idea'){const p=DATA.p[+b.dataset.i];S.ideas.push({id:uid(),text:p[0]+': '+p[1],done:false});b.textContent='Saved';b.disabled=true;save();return}
+  else if(a==='delp')S.posts=S.posts.filter(p=>p.id!==b.dataset.id);
+  else if(a==='deli')S.ideas=S.ideas.filter(p=>p.id!==b.dataset.id);
+  else if(a==='ref')S.refs=Math.max(0,S.refs+ +b.dataset.n);
+  else return;
+  save();render();
+});
+document.addEventListener('change',e=>{
+  const t=e.target,a=t.dataset.a;if(!a)return;
+  if(a==='pf'){const p=S.posts.find(x=>x.id===t.dataset.id);if(p)p[t.dataset.f]=t.checked}
+  else if(a==='idone'){const p=S.ideas.find(x=>x.id===t.dataset.id);if(p)p.done=t.checked}
+  else if(a==='setup')S.setup[t.dataset.i]=t.checked;
+  else return;
+  save();render();
+});
+document.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(e.target.id==='addpost'){const d=document.getElementById('np-date').value,w=document.getElementById('np-what').value.trim();if(!d)return;S.posts.push({id:uid(),date:d,what:w,tagged:false,dmd:false});vm=d.slice(0,7)}
+  else if(e.target.id==='addidea'){const w=document.getElementById('ni-text').value.trim();if(!w)return;S.ideas.push({id:uid(),text:w,done:false})}
+  save();render();
+});
+save();render();
+</script>
+
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body>
+</html>
